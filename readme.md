@@ -8,6 +8,12 @@ It can currently only
 
 - convert snake case to camel case for all functions and variables in a project. Classes, extends and implements get studly cased
 
+## How to install?
+
+```bash
+composer update
+```
+
 ## How to run?
 
 ```bash

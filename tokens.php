@@ -43,6 +43,16 @@ $thingy = "$thing1";
 
 EOF;
 
+$source = <<<'EOF'
+    <?php
+        $query = "
+                Select distinct Salary from Employee e1 where 2=Select count(distinct Salary) from Employee e2 where e1.salary<=e2.salary;
+        ";
+
+EOF;
+
+
+
 $tokens = token_get_all($source);
 
 $resTokens = [];

@@ -17,6 +17,11 @@ class VariableRule
 
         (new PatternMatcher($collection))->apply(function (QuerySequence $q) use ($type) {
             $variable = $q->strict(T_VARIABLE);
+            $delim = $q->possible(T_WHITESPACE);
+            $delim = $q->possible(')');
+            $delim = $q->possible(']');
+            $delim = $q->possible('\'');
+            $delim = $q->possible('"');
             $end = $q->search(';');
 
             if ($q->isValid()) {
@@ -44,6 +49,8 @@ class VariableRule
             $delim = $q->possible(T_WHITESPACE);
             $delim = $q->possible(')');
             $delim = $q->possible(']');
+            $delim = $q->possible('\'');
+            $delim = $q->possible('"');
             $end = $q->search(';');
 
             if ($q->isValid()) {

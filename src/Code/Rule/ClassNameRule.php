@@ -77,7 +77,7 @@ class ClassNameRule
             $start = $q->strict('new');
             $space = $q->possible(T_WHITESPACE);
             $name = $q->possible(T_STRING);
-            $end = $q->search('{');
+            $end = $q->search('(');
 
             if ($q->isValid()) {
                 if ($name->getValue() != null && isset($mapClassNames[$name->getValue()])) {

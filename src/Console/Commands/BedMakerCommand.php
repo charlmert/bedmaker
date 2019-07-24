@@ -62,7 +62,7 @@ class BedMakerCommand extends Command
             $tokenizer->load(file_get_contents($input->getArgument('src')));
             //$tokenizer->runSelected($config);
             $fileContents = $tokenizer->runAll();
-            file_put_contents($fileInfo->getPathname(), $fileContents);
+            file_put_contents($input->getArgument('src'), $fileContents);
 
             $io->writeln('Fixing file after: ' . $filename);
             $tokenizer->load(file_get_contents($input->getArgument('src')));

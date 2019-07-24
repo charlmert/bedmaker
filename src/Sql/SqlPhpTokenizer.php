@@ -29,7 +29,7 @@ class SqlPhpTokenizer
         $collection = Collection::createFromString($this->modifiedSource);
         $mapVariables = [];
 
-        (new PatternMatcher($collection))->apply(function (QuerySequence $q) use ($type) {
+        (new PatternMatcher($collection))->apply(function (QuerySequence $q) {
             $query = $q->strict(T_ENCAPSED_AND_WHITESPACE);
             $end = $q->search(';');
 
@@ -38,9 +38,11 @@ class SqlPhpTokenizer
                     try {
                         $tokenizer = new Tokenizer($query->getValue());
                         $newValue = $tokenizer->toElloquent();
-                        $variable->setValue($newValue);
+                        $query->setValue($newValue);
                     } catch (\Exception $e) {
-                        Logger::error($e);
+                        dump($query->getValue());
+                        dd($e);
+                        //Logger::error($e);
                     }
                 }
             }

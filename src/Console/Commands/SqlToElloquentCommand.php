@@ -31,7 +31,7 @@ class SqlToElloquentCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->title('Bedmaker: Convert SQL to Laravel Elloquent');
 
-        $sqlPhpParser = new SqlPhpTokenizer();
+        $sqlPhpTokenizer = new SqlPhpTokenizer();
         if (is_dir($input->getArgument('src'))) {
             $io->writeln("Directory: " . $input->getArgument('src'));
 
@@ -41,17 +41,17 @@ class SqlToElloquentCommand extends Command
                 }
 
                 $io->writeln('Fixing file: ' . $fileInfo->getFilename());
-                $sqlPhpParser->load(file_get_contents($fileInfo->getPathname()));
+                $sqlPhpTokenizer->load(file_get_contents($fileInfo->getPathname()));
                 //$tokenizer->runSelected($config);
-                $fileContents = $sqlPhpParser->process();
+                $fileContents = $sqlPhpTokenizer->process();
                 file_put_contents($fileInfo->getPathname(), $fileContents);
             }
         } else {
             $filename = basename($input->getArgument('src'));
             $io->writeln('Fixing file: ' . $filename);
-            $sqlPhpParser->load(file_get_contents($input->getArgument('src')));
+            $sqlPhpTokenizer->load(file_get_contents($input->getArgument('src')));
             //$tokenizer->runSelected($config);
-            $fileContents = $sqlPhpParser->process();
+            $fileContents = $sqlPhpTokenizer->process();
             file_put_contents($input->getArgument('src'), $fileContents);
         }
         $io->writeln('All files fixed');

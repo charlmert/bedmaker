@@ -2,21 +2,21 @@
 
 namespace BedMaker\Log;
 
-use SimpleLogger\Logger;
+use SimpleLogger\Logger as SimpleLogger;
 
 class Logger
 {
-    public static info($message, $extra) {
+    public static function info($message, $extra = null) {
         $logfile = 'bedmaker.log';
         $channel = 'events';
-        $logger  = new Logger($logfile, $channel);
+        $logger  = new SimpleLogger($logfile, $channel);
         $logger->info($message, $extra);
     }
 
-    public static error($message, $extra) {
+    public static function error($message, $extra = null) {
         $logfile = 'bedmaker.log';
         $channel = 'events';
-        $logger  = new Logger($logfile, $channel);
+        $logger  = new SimpleLogger($logfile, $channel);
         $logger->error($message, $extra);
     }
 }

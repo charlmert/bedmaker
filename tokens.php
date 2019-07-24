@@ -1,5 +1,10 @@
 <?php
 
+
+/*
+print_r(get_defined_constants());
+exit(0);
+
 $tokenConstants = array_filter(
     get_defined_constants(),
     function ($value, $key) {
@@ -10,11 +15,15 @@ $tokenConstants = array_filter(
 
 echo 'Token                          | Value' . PHP_EOL;
 echo '------------------------------ | -----' . PHP_EOL;
+*/
 
+$tokenConstants = get_defined_constants();
 $tokenConstantsByCode = [];
 
 foreach ($tokenConstants as $key => $value) {
-    $tokenConstantsByCode[$value] = $key;
+    if (is_int($value)) {
+        $tokenConstantsByCode[$value] = $key;
+    }
 }
 
 /*
@@ -25,10 +34,13 @@ foreach ($tokenConstants as $tokenConstant => $value) {
 
 $source = <<<'EOF'
     <?php
-    class some_name extends parent_name
-    {
-        private someVar = null;
-    }
+class CardBalanceReport extends som_extend implements some_impl1, some_impl2, some_impl3
+{
+
+}
+
+$thingy = "$thing1";
+
 EOF;
 
 $tokens = token_get_all($source);
@@ -39,6 +51,8 @@ foreach ($tokens as $token) {
         $hToken =& $resTokens[];
         $hToken = $token;
         $hToken[0] = $tokenConstantsByCode[$token[0]] . '::' . $token[0];
+    } else {
+        print_r($token);
     }
 }
 

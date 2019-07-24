@@ -19,8 +19,7 @@ class BedMakerCommand extends Command
         $this
           ->setDescription('Applies Quality and Styling to PHP Code')
           ->setHelp('This command helps you to apply quality and styling to your code')
-          ->addArgument('dir', InputArgument::OPTIONAL, 'The directory to search for php files.')
-          ->addArgument('file', InputArgument::OPTIONAL, 'You can also specify a single php file.');
+          ->addArgument('src', InputArgument::OPTIONAL, 'The directory to search for php files. You can also specify a single php file.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -30,18 +29,47 @@ class BedMakerCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->title('Bedmaker: Apply Code Style');
 
-        $io->writeln("Directory: " . $input->getArgument('dir'));
-        foreach (new \DirectoryIterator($input->getArgument('dir')) as $fileInfo) {
-            if ($fileInfo->isDot()) {
-                continue;
+        $tokenizer = new Tokenizer();
+        if (is_dir($input->getArgument('src'))) {
+            $io->writeln("Directory: " . $input->getArgument('src'));
+
+            foreach (new \DirectoryIterator($input->getArgument('src')) as $fileInfo) {
+                if ($fileInfo->isDot()) {
+                    continue;
+                }
+
+                $io->writeln('Fixing file: ' . $fileInfo->getFilename());
+                $tokenizer->load(file_get_contents($fileInfo->getPathname()));
+                //$tokenizer->runSelected($config);
+                $fileContents = $tokenizer->runAll();
+                file_put_contents($fileInfo->getPathname(), $fileContents);
             }
 
-            $io->writeln('Fixing file: ' . $fileInfo->getFilename());
-            $tokenizer = new Tokenizer(file_get_contents($fileInfo->getPathname()));
+            foreach (new \DirectoryIterator($input->getArgument('src')) as $fileInfo) {
+                if ($fileInfo->isDot()) {
+                    continue;
+                }
+
+                $io->writeln('Fixing file after: ' . $fileInfo->getFilename());
+                $tokenizer->load(file_get_contents($fileInfo->getPathname()));
+                //$tokenizer->runSelected($config);
+                $fileContents = $tokenizer->runAfter();
+                file_put_contents($fileInfo->getPathname(), $fileContents);
+            }
+        } else {
+            $filename = basename($input->getArgument('src'));
+            $io->writeln('Fixing file: ' . $filename);
+            $tokenizer->load(file_get_contents($input->getArgument('src')));
             //$tokenizer->runSelected($config);
             $fileContents = $tokenizer->runAll();
             file_put_contents($fileInfo->getPathname(), $fileContents);
-            exit(0);
+
+            $io->writeln('Fixing file after: ' . $filename);
+            $tokenizer->load(file_get_contents($input->getArgument('src')));
+            //$tokenizer->runSelected($config);
+            $fileContents = $tokenizer->runAfter();
+            file_put_contents($input->getArgument('src'), $fileContents);
         }
+        $io->writeln('All files fixed');
     }
 }

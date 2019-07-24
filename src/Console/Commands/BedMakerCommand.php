@@ -19,7 +19,7 @@ class BedMakerCommand extends Command
         $this
           ->setDescription('Applies Quality and Styling to PHP Code')
           ->setHelp('This command helps you to apply quality and styling to your code')
-          ->addArgument('src', InputArgument::OPTIONAL, 'The directory to search for php files. You can also specify a single php file.');
+          ->addArgument('src', InputArgument::REQUIRED, 'The directory to search for php files. You can also specify a single php file.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

@@ -37,7 +37,8 @@ class Tokenizer
 
     public function runAll() {
         $this->fixClassNames();
-        $this->fixFunctions();
+        $this->fixClassMethods();
+        //$this->fixFunctions();
         $this->fixVariables();
         $this->fixClassNameUsage();
         $this->fixClassMethodUsage();
@@ -75,6 +76,12 @@ class Tokenizer
         */
     }
 
+    public function fixClassMethods() {
+        $this->checkSource();
+        [$this->modifiedSource, $mapClassMethods] = ClassMethodRule::transform($this->modifiedSource);
+        $this->mapClassMethods = array_merge($this->mapClassMethods, $mapClassMethods);
+    }
+
     public function fixFunctions() {
         $this->checkSource();
         [$this->modifiedSource, $mapFunctions] = FunctionRule::transform($this->modifiedSource);
@@ -94,12 +101,12 @@ class Tokenizer
 
     public function fixClassMethodUsage() {
         $this->checkSource();
-        $this->modifiedSource = ClassNameRule::transformUsage($this->modifiedSource, $this->mapClassNames);
+        $this->modifiedSource = ClassNameRule::transformUsage($this->modifiedSource, $this->mapClassMethods);
     }
 
     public function fixClassVariableUsage() {
         $this->checkSource();
-        $this->modifiedSource = ClassNameRule::transformUsage($this->modifiedSource, $this->mapClassNames);
+        $this->modifiedSource = ClassNameRule::transformUsage($this->modifiedSource, $this->mapClassVariables);
     }
 
     public function fixFunctionUsage() {

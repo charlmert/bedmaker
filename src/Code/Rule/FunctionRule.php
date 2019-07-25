@@ -44,6 +44,11 @@ class FunctionRule
         (new PatternMatcher($collection))->apply(function (QuerySequence $q) use ($mapFunctions) {
             $start = $q->possible(T_FUNCTION);
             $name = $q->possible(T_STRING);
+            $delim = $q->possible(T_WHITESPACE);
+            $delim = $q->possible(')');
+            $delim = $q->possible(']');
+            $delim = $q->possible('\'');
+            $delim = $q->possible('"');
             $end = $q->search('(');
 
             if ($q->isValid()) {

@@ -39,7 +39,7 @@ class ClassMethodRule
             $end = $q->search('{');
 
             if ($q->isValid()) {
-                if ($name->getValue() != null && in_array($name->getValue(), self::PHP_MAGIC_METHODS)) {
+                if ($name->getValue() != null && !in_array($name->getValue(), self::PHP_MAGIC_METHODS)) {
                     $newValue = CodeCase::toCamel($name->getValue());
 
                     if ($type == 'camel') {
@@ -59,7 +59,6 @@ class ClassMethodRule
         $collection = Collection::createFromString($source);
 
         (new PatternMatcher($collection))->apply(function (QuerySequence $q) use ($mapFunctions) {
-            $start = $q->possible(T_FUNCTION);
             $name = $q->possible(T_STRING);
             $delim = $q->possible(T_WHITESPACE);
             $delim = $q->possible(')');

@@ -63,6 +63,11 @@ class VariableRule
         (new PatternMatcher($collection))->apply(function (QuerySequence $q) use ($mapVariables) {
             $start = $q->strict(T_OBJECT_OPERATOR);
             $name = $q->strict(T_STRING);
+            $delim = $q->possible(T_WHITESPACE);
+            $delim = $q->possible(')');
+            $delim = $q->possible(']');
+            $delim = $q->possible('\'');
+            $delim = $q->possible('"');
             $end = $q->search(';');
 
             if ($q->isValid()) {

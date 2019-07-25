@@ -14,4 +14,8 @@ class ClassMemberRule
     public static function transform(string $source, $type = self::TRANSFORM_STUDLY) {
         return ['', []];
     }
+
+    public static function transformUsage(string $source, array $mapMethods) {
+        return (string) $source;
+    }
 }

@@ -15,7 +15,7 @@ class ClassNameRule
         $collection = Collection::createFromString($source);
         $mapClasses = [];
 
-        (new PatternMatcher($collection))->apply(function (QuerySequence $q) use ($type) {
+        (new PatternMatcher($collection))->apply(function (QuerySequence $q) use ($type, &$mapClasses) {
             $start = $q->strict('class');
             $space = $q->possible(T_WHITESPACE);
             $className = $q->possible(T_STRING);

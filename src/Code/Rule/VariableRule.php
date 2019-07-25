@@ -15,7 +15,7 @@ class VariableRule
         $collection = Collection::createFromString($source);
         $mapVariables = [];
 
-        (new PatternMatcher($collection))->apply(function (QuerySequence $q) use ($type) {
+        (new PatternMatcher($collection))->apply(function (QuerySequence $q) use ($type, &$mapVariables) {
             $variable = $q->strict(T_VARIABLE);
             $delim = $q->possible(T_WHITESPACE);
             $delim = $q->possible(')');

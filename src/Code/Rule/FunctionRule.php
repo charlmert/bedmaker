@@ -15,7 +15,7 @@ class FunctionRule
         $collection = Collection::createFromString($source);
         $mapFunctions = [];
 
-        (new PatternMatcher($collection))->apply(function (QuerySequence $q) use ($type) {
+        (new PatternMatcher($collection))->apply(function (QuerySequence $q) use ($type, &$mapFunctions) {
             $start = $q->strict('function');
             $space = $q->possible(T_WHITESPACE);
             $name = $q->possible(T_STRING);

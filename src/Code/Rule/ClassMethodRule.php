@@ -30,9 +30,9 @@ class ClassMethodRule
 
     public static function transform(string $source, $type = self::TRANSFORM_STUDLY) {
         $collection = Collection::createFromString($source);
-        $mapFunctions = [];
+        $mapMethods = [];
 
-        (new PatternMatcher($collection))->apply(function (QuerySequence $q) use ($type) {
+        (new PatternMatcher($collection))->apply(function (QuerySequence $q) use ($type, &$mapMethods) {
             $start = $q->strict('function');
             $space = $q->possible(T_WHITESPACE);
             $name = $q->possible(T_STRING);
@@ -46,30 +46,29 @@ class ClassMethodRule
                         $newValue = CodeCase::toCamel($name->getValue());
                     }
 
-                    $mapFunctions[$name->getValue()] = $newValue;
+                    $mapMethods[$name->getValue()] = $newValue;
                     $name->setValue($newValue);
                 }
             }
         });
 
-        return [(string) $collection, $mapFunctions];
+        return [(string) $collection, $mapMethods];
     }
 
-    public static function transformUsage(string $source, array $mapFunctions) {
+    public static function transformUsage(string $source, array $mapMethods) {
         $collection = Collection::createFromString($source);
 
-        (new PatternMatcher($collection))->apply(function (QuerySequence $q) use ($mapFunctions) {
-            $name = $q->possible(T_STRING);
+        (new PatternMatcher($collection))->apply(function (QuerySequence $q) use ($mapMethods) {
+            $name = $q->strict(T_STRING);
             $delim = $q->possible(T_WHITESPACE);
-            $delim = $q->possible(')');
-            $delim = $q->possible(']');
+            $delim = $q->possible('(');
             $delim = $q->possible('\'');
             $delim = $q->possible('"');
             $end = $q->search('(');
 
             if ($q->isValid()) {
-                if ($name->getValue() != null && isset($mapFunctions[$name->getValue()])) {
-                    $name->setValue($mapFunctions[$name->getValue()]);
+                if ($name->getValue() != null && isset($mapMethods[$name->getValue()])) {
+                    $name->setValue($mapMethods[$name->getValue()]);
                 }
             }
         });

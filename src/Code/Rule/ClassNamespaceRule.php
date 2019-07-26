@@ -25,7 +25,6 @@ class ClassNamespaceRule
                         $mapNamespaces = [
                             $namespace
                         ];
-                        dd($returnSource);
                         return [(string) $returnSource, $mapNamespaces];
                     } else {
                         throw new \Exception('missing <?php open tag in source');

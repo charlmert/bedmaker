@@ -2,6 +2,8 @@
 
 namespace BedMaker\Code;
 
+use BedMaker\Config;
+use BedMaker\Code\Rule\ClassNamespaceRule;
 use BedMaker\Code\Rule\ClassNameRule;
 use BedMaker\Code\Rule\ClassMethodRule;
 use BedMaker\Code\Rule\ClassMemberRule;
@@ -11,24 +13,30 @@ use BedMaker\Code\Rule\VariableRule;
 
 class Tokenizer
 {
+    private $config;
     private $source;
     private $modifiedSource;
 
+    private $mapClassNamespaces = [];
     private $mapClassNames = [];
     private $mapClassMethods = [];
     private $mapClassVariables = [];
     private $mapFunctions = [];
     private $mapVariables = [];
 
-    public function __construct(string $source = null)
+    public function __construct(string $source = null, Config $config = null)
     {
         $this->source = $source;
         $this->modifiedSource = $source;
+        $this->config = $config;
     }
 
-    public function load(string $source) {
+    public function load(string $source, Config $config = null) {
         $this->source = $source;
         $this->modifiedSource = $source;
+        if ($config != null) {
+            $this->config = $config;
+        }
     }
 
     public function setRules(array $rules) {
@@ -36,6 +44,7 @@ class Tokenizer
     }
 
     public function runAll() {
+        $this->fixClassNamespaces();
         $this->fixClassNames();
         $this->fixClassMethods();
         //$this->fixFunctions();
@@ -49,6 +58,7 @@ class Tokenizer
     }
 
     public function runAfter() {
+        //$this->fixClassNamespaceUsage();
         $this->fixClassNameUsage();
         $this->fixClassMethodUsage();
         $this->fixClassMemberUsage();
@@ -63,17 +73,16 @@ class Tokenizer
         }
     }
 
+    public function fixClassNamespaces() {
+        $this->checkSource();
+        [$this->modifiedSource, $mapClassNamespaces] = ClassNamespaceRule::transform($this->modifiedSource, $this->config);
+        $this->mapClassNamespaces = array_merge($this->mapClassNamespaces, $mapClassNamespaces);
+    }
+
     public function fixClassNames() {
         $this->checkSource();
         [$this->modifiedSource, $mapClassNames] = ClassNameRule::transform($this->modifiedSource);
         $this->mapClassNames = array_merge($this->mapClassNames, $mapClassNames);
-
-        /*
-        [$this->modifiedSource, $mapClassMethods] = ClassMethodRule::transform($this->modifiedSource);
-        $this->mapClassMethods = array_merge($this->mapClassMethods, $mapClassMethods);
-        [$this->modifiedSource, $mapClassVariables] = ClassMemberRule::transform($this->modifiedSource);
-        $this->mapClassVariables = array_merge($this->mapClassVariables, $mapClassVariables);
-        */
     }
 
     public function fixClassMethods() {

@@ -6,12 +6,14 @@ use Funivan\PhpTokenizer\Collection;
 use Funivan\PhpTokenizer\Pattern\PatternMatcher;
 use Funivan\PhpTokenizer\QuerySequence\QuerySequence;
 use BedMaker\Code\Style\CodeCase;
+use BedMaker\Config;
+use BedMaker\Str\Rename;
 
 class ClassNameRule
 {
     const TRANSFORM_STUDLY = 'studly';
 
-    public static function transform(string $source, $type = self::TRANSFORM_STUDLY) {
+    public static function transform(string $source, $type = self::TRANSFORM_STUDLY, Config $config = null) {
         $collection = Collection::createFromString($source);
         $mapClasses = [];
 
@@ -58,6 +60,11 @@ class ClassNameRule
 
                     foreach ($implementsClasses as $class) {
                         $newValue = CodeCase::toStudly($class);
+
+                        if ($config->get('rules.class.name.rename.from', '') != '') {
+                            $newValue = Rename::transform($newValue, $config->get('rules.class.name.rename.from', ''), $config->get('rules.class.name.rename.to', ''));
+                        }
+
                         $mapClasses[$class] = $newValue;
                         $tmpImplementsClass[] = $newValue;
                     }
@@ -87,5 +94,36 @@ class ClassNameRule
         });
 
         return (string) $collection;
+    }
+
+    public static function getClassName($source, $default = '') {
+        $collection = Collection::createFromString($source);
+        $mapClasses = [];
+        $returnFilename = '';
+
+        (new PatternMatcher($collection))->apply(function (QuerySequence $q) use (&$returnFilename) {
+            $start = $q->strict('class');
+            $space = $q->possible(T_WHITESPACE);
+            $className = $q->possible(T_STRING);
+            $space2 = $q->possible(T_WHITESPACE);
+            $extends = $q->possible(T_EXTENDS);
+            $space3 = $q->possible(T_WHITESPACE);
+            $extendsClass = $q->possible(T_STRING);
+            $space3 = $q->possible(T_WHITESPACE);
+            $implements = $q->possible(T_IMPLEMENTS);
+            $space3 = $q->possible(T_WHITESPACE);
+            $implementsClass = $q->possible(T_STRING);
+            $end = $q->search('{');
+
+            if ($q->isValid()) {
+                $returnFilename = $className->getValue();
+            }
+        });
+
+        if ($returnFilename != '') {
+            return $returnFilename;
+        }
+
+        return $default;
     }
 }

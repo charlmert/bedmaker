@@ -31,11 +31,7 @@ class Config
      */
     public function get(string $dot)
     {
-        $result = Arr::get($this->config, $dot);
-        if ($result === null) {
-            throw new ConfigException('No configuration defined at [' . $dot . ']');
-        }
-        return $result;
+        return Arr::get($this->config, $dot);
     }
 
     /**

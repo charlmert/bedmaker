@@ -1,10 +1,24 @@
 <?php
 return [
-    "rules" => [
-        "function.case.camel",
-        "variable.case.camel",
-        "class.case.camel",
-        "class.function.newLineSpacing" => 1,
-        "class.comment.removePreClassComments",
-    ]
-]
+    'rules' => [
+        'file' => [
+            'name' => [
+                'case' => 'studly',
+             ],
+             'rename' => 'class'
+        ],
+        'class' => [
+            'name' => [
+                'case' => 'studly',
+                'rename' => 'class',
+            ],
+            'namespace' => 'ClaimsCardSoap\\Services'
+        ],
+        'function' => [
+            'case' => 'camel',
+        ],
+        'variable' => [
+            'case' => 'camel'
+        ],
+    ],
+];

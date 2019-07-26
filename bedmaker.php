@@ -3,12 +3,12 @@
 require __DIR__.'/vendor/autoload.php';
 
 use BedMaker\Console\Console;
-use BedMaker\Console\Commands\BedMakerCommand;
+use BedMaker\Console\Commands\RefactorCommand;
 use BedMaker\Console\Commands\SqlToElloquentCommand;
 
 $console = new Console();
 
-$console->add(new BedMakerCommand());
+$console->add(new RefactorCommand());
 $console->add(new SqlToElloquentCommand());
 
 $console->run();

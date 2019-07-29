@@ -46,6 +46,7 @@ class Tokenizer
     public function runAll() {
         $this->fixClassNamespaces();
         $this->fixClassNames();
+        dd('here');
         $this->fixClassMethods();
         //$this->fixFunctions();
         $this->fixVariables();

@@ -14,6 +14,14 @@ class ClassNameRule
     const TRANSFORM_STUDLY = 'studly';
 
     public static function transform(string $source, $type = self::TRANSFORM_STUDLY, Config $config = null) {
+        $mapClasses = [];
+        preg_match_all('/class.*/s', $source, $matches);
+        if (isset($matches[0])) {
+            dd($matches[0]);
+        }
+    }
+
+    public static function transformWithTokenizer(string $source, $type = self::TRANSFORM_STUDLY, Config $config = null) {
         $collection = Collection::createFromString($source);
         $mapClasses = [];
 
